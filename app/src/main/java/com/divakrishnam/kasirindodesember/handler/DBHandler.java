@@ -421,11 +421,11 @@ public class DBHandler extends SQLiteOpenHelper {
         List<Transaksi> transaksis = new ArrayList<>();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-            Transaksi transaksi = new Transaksi();
-            transaksi.setTransaksiId(cursor.getString(0));
-            transaksi.setTransaksiKasir(cursor.getString(5));
-            transaksi.setTransaksiWaktu(cursor.getString(2));
-            transaksi.setTransaksiTotalBelanja(cursor.getString(3));
+                Transaksi transaksi = new Transaksi();
+                transaksi.setTransaksiId(cursor.getString(0));
+                transaksi.setTransaksiKasir(cursor.getString(5));
+                transaksi.setTransaksiWaktu(cursor.getString(2));
+                transaksi.setTransaksiTotalBelanja(cursor.getString(3));
                 transaksis.add(transaksi);
                 cursor.moveToNext();
             }
