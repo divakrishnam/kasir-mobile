@@ -55,7 +55,6 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DETAIL_TRANSAKSI_TOTAL_HARGA = "DetailTransaksiTotalHarga";
 
 
-
     public DBHandler(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
@@ -130,8 +129,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 + " AFTER INSERT ON "
                 + TABLE_DETAIL_TRANSAKSI
                 + " BEGIN"
-                + " UPDATE "+TABLE_BARANG+" SET "+BARANG_STOK+"=OLD."+BARANG_STOK+"-NEW."+DETAIL_TRANSAKSI_JUMLAH_BARANG
-                + " WHERE OLD."+BARANG_ID+"=NEW."+DETAIL_TRANSAKSI_ID_BARANG+";"
+                + " UPDATE " + TABLE_BARANG + " SET " + BARANG_STOK + "=OLD." + BARANG_STOK + "-NEW." + DETAIL_TRANSAKSI_JUMLAH_BARANG
+                + " WHERE OLD." + BARANG_ID + "=NEW." + DETAIL_TRANSAKSI_ID_BARANG + ";"
                 + " END;";
         sqLiteDatabase.execSQL(CREATE_TRIGGER_BARANG);
     }
@@ -143,13 +142,13 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //BARANG
 
-    public List<Barang> loadBarangHandler(){
-        String query = "SELECT * FROM "+TABLE_BARANG+" INNER JOIN "+TABLE_KATEGORI+" ON "+BARANG_ID_KATEGORI+" = "+KATEGORI_ID;
+    public List<Barang> loadBarangHandler() {
+        String query = "SELECT * FROM " + TABLE_BARANG + " INNER JOIN " + TABLE_KATEGORI + " ON " + BARANG_ID_KATEGORI + " = " + KATEGORI_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<Barang> barangs = new ArrayList<>();
-        if (cursor.moveToFirst()){
-            while(!cursor.isAfterLast()) {
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
                 Barang barang = new Barang();
                 barang.setBarangId(cursor.getString(0));
                 barang.setBarangNama(cursor.getString(1));
@@ -160,7 +159,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
             cursor.close();
-        }else{
+        } else {
             barangs = null;
         }
 
@@ -168,7 +167,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return barangs;
     }
 
-    public void addBarangHandler(Barang barang){
+    public void addBarangHandler(Barang barang) {
         ContentValues values = new ContentValues();
         values.put(BARANG_ID, barang.getBarangId());
         values.put(BARANG_NAMA, barang.getBarangNama());
@@ -181,12 +180,12 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Barang findBarangHandler(String search){
-        String query = "SELECT * FROM "+TABLE_BARANG+" WHERE "+BARANG_NAMA+" LIKE "+"'%"+search+"%' OR "+BARANG_ID+" LIKE "+"'%"+search+"%'";
+    public Barang findBarangHandler(String search) {
+        String query = "SELECT * FROM " + TABLE_BARANG + " WHERE " + BARANG_NAMA + " LIKE " + "'%" + search + "%' OR " + BARANG_ID + " LIKE " + "'%" + search + "%'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Barang barang = new Barang();
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             barang.setBarangId(cursor.getString(0));
             barang.setBarangNama(cursor.getString(1));
@@ -195,7 +194,7 @@ public class DBHandler extends SQLiteOpenHelper {
             barang.setBarangHarga(cursor.getString(4));
 
             cursor.close();
-        }else{
+        } else {
             barang = null;
         }
 
@@ -203,16 +202,16 @@ public class DBHandler extends SQLiteOpenHelper {
         return barang;
     }
 
-    public boolean deleteBarangHandler(String id){
+    public boolean deleteBarangHandler(String id) {
         boolean result = false;
-        String query = "SELECT * FROM "+TABLE_BARANG+" WHERE "+BARANG_ID+" = '"+id+"'";
+        String query = "SELECT * FROM " + TABLE_BARANG + " WHERE " + BARANG_ID + " = '" + id + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Barang barang = new Barang();
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             barang.setBarangId(cursor.getString(0));
-            db.delete(TABLE_BARANG, BARANG_ID+"=?", new String[]{
+            db.delete(TABLE_BARANG, BARANG_ID + "=?", new String[]{
                     String.valueOf(barang.getBarangId())
             });
             cursor.close();
@@ -222,7 +221,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateBarangHandler(String id, String nama, String kategori, String stok, String harga){
+    public boolean updateBarangHandler(String id, String nama, String kategori, String stok, String harga) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put(BARANG_ID, id);
@@ -230,12 +229,12 @@ public class DBHandler extends SQLiteOpenHelper {
         args.put(BARANG_ID_KATEGORI, kategori);
         args.put(BARANG_STOK, stok);
         args.put(BARANG_HARGA, harga);
-        return db.update(TABLE_BARANG, args, BARANG_ID+"="+id, null)>0;
+        return db.update(TABLE_BARANG, args, BARANG_ID + "=" + id, null) > 0;
     }
 
     //KASIR
 
-    public void registrasiHandler(Kasir kasir){
+    public void registrasiHandler(Kasir kasir) {
         ContentValues values = new ContentValues();
         values.put(KASIR_ID, kasir.getKasirId());
         values.put(KASIR_NAMA, kasir.getKasirNama());
@@ -247,19 +246,19 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Kasir loginHandler(String username, String password){
-        String query = "SELECT * FROM "+TABLE_KASIR+" WHERE "+KASIR_USERNAME+" = "+"'"+username+"' AND "+KASIR_PASSWORD+" = "+"'"+password+"'";
+    public Kasir loginHandler(String username, String password) {
+        String query = "SELECT * FROM " + TABLE_KASIR + " WHERE " + KASIR_USERNAME + " = " + "'" + username + "' AND " + KASIR_PASSWORD + " = " + "'" + password + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Kasir kasir = new Kasir();
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             kasir.setKasirId(cursor.getString(0));
             kasir.setKasirNama(cursor.getString(1));
             kasir.setKasirUsername(cursor.getString(2));
             kasir.setKasirPassword(cursor.getString(3));
             cursor.close();
-        }else{
+        } else {
             kasir = null;
         }
 
@@ -267,17 +266,39 @@ public class DBHandler extends SQLiteOpenHelper {
         return kasir;
     }
 
-    public Kasir loadKasirHandler(){
-        String query = "SELECT * FROM "+TABLE_KASIR;
+    public List<Kasir> loadKasirHandler() {
+        String query = "SELECT * FROM " + TABLE_KASIR;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        List<Kasir> kasirs = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                Kasir kasir = new Kasir();
+                kasir.setKasirId(cursor.getString(0));
+                kasir.setKasirNama(cursor.getString(1));
+                kasirs.add(kasir);
+                cursor.moveToNext();
+            }
+            cursor.close();
+        } else {
+            kasirs = null;
+        }
+
+        db.close();
+        return kasirs;
+    }
+
+    public Kasir findKasirHandler(String search) {
+        String query = "SELECT * FROM " + TABLE_KASIR + " WHERE " + KASIR_NAMA + " LIKE " + "'%" + search + "%' OR " + KASIR_ID + " LIKE " + "'%" + search + "%'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Kasir kasir = new Kasir();
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             kasir.setKasirId(cursor.getString(0));
             kasir.setKasirNama(cursor.getString(1));
             cursor.close();
-        }else{
+        } else {
             kasir = null;
         }
 
@@ -285,34 +306,16 @@ public class DBHandler extends SQLiteOpenHelper {
         return kasir;
     }
 
-    public Kasir findKasirHandler(String search){
-        String query = "SELECT * FROM "+TABLE_KASIR+" WHERE "+KASIR_NAMA+" LIKE "+"'%"+search+"%' OR "+KASIR_ID+" LIKE "+"'%"+search+"%'";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        Kasir kasir = new Kasir();
-        if (cursor.moveToFirst()){
-            cursor.moveToFirst();
-            kasir.setKasirId(cursor.getString(0));
-            kasir.setKasirNama(cursor.getString(1));
-            cursor.close();
-        }else{
-            kasir = null;
-        }
-
-        db.close();
-        return kasir;
-    }
-
-    public boolean deleteKasirHandler(String id){
+    public boolean deleteKasirHandler(String id) {
         boolean result = false;
-        String query = "SELECT * FROM "+TABLE_KASIR+" WHERE "+KASIR_ID+" = '"+id+"'";
+        String query = "SELECT * FROM " + TABLE_KASIR + " WHERE " + KASIR_ID + " = '" + id + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Kasir kasir = new Kasir();
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             kasir.setKasirId(cursor.getString(0));
-            db.delete(TABLE_KASIR, KASIR_ID+"=?", new String[]{
+            db.delete(TABLE_KASIR, KASIR_ID + "=?", new String[]{
                     String.valueOf(kasir.getKasirId())
             });
             cursor.close();
@@ -322,23 +325,23 @@ public class DBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateKasirHandler(String id, String nama){
+    public boolean updateKasirHandler(String id, String nama) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put(KASIR_ID, id);
         args.put(KASIR_NAMA, nama);
-        return db.update(TABLE_KASIR, args, KASIR_ID+"="+id, null)>0;
+        return db.update(TABLE_KASIR, args, KASIR_ID + "=" + id, null) > 0;
     }
 
     //KATEGORI
 
-    public List<Kategori> loadKategoriHandler(){
-        String query = "SELECT * FROM "+TABLE_KATEGORI;
+    public List<Kategori> loadKategoriHandler() {
+        String query = "SELECT * FROM " + TABLE_KATEGORI;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<Kategori> kategoris = new ArrayList<>();
-        if (cursor.moveToFirst()){
-            while(!cursor.isAfterLast()) {
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
                 Kategori kategori = new Kategori();
                 kategori.setKategoriId(cursor.getString(0));
                 kategori.setKategoriNama(cursor.getString(1));
@@ -346,7 +349,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
             cursor.close();
-        }else{
+        } else {
             kategoris = null;
         }
 
@@ -354,7 +357,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return kategoris;
     }
 
-    public void addKategoriHandler(Kategori kategori){
+    public void addKategoriHandler(Kategori kategori) {
         ContentValues values = new ContentValues();
         values.put(KATEGORI_ID, kategori.getKategoriId());
         values.put(KATEGORI_NAMA, kategori.getKategoriNama());
@@ -364,17 +367,17 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Kategori findKategoriHandler(String search){
-        String query = "SELECT * FROM "+TABLE_KATEGORI+" WHERE "+KATEGORI_NAMA+" LIKE "+"'%"+search+"%' OR "+KATEGORI_ID+" LIKE "+"'%"+search+"%'";
+    public Kategori findKategoriHandler(String search) {
+        String query = "SELECT * FROM " + TABLE_KATEGORI + " WHERE " + KATEGORI_NAMA + " LIKE " + "'%" + search + "%' OR " + KATEGORI_ID + " LIKE " + "'%" + search + "%'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Kategori kategori = new Kategori();
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             kategori.setKategoriId(cursor.getString(0));
             kategori.setKategoriNama(cursor.getString(1));
             cursor.close();
-        }else{
+        } else {
             kategori = null;
         }
 
@@ -382,16 +385,16 @@ public class DBHandler extends SQLiteOpenHelper {
         return kategori;
     }
 
-    public boolean deleteKategoriHandler(String id){
+    public boolean deleteKategoriHandler(String id) {
         boolean result = false;
-        String query = "SELECT * FROM "+TABLE_KATEGORI+" WHERE "+KATEGORI_ID+" = '"+id+"'";
+        String query = "SELECT * FROM " + TABLE_KATEGORI + " WHERE " + KATEGORI_ID + " = '" + id + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Kategori kategori = new Kategori();
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             kategori.setKategoriId(cursor.getString(0));
-            db.delete(TABLE_KATEGORI, KATEGORI_ID+"=?", new String[]{
+            db.delete(TABLE_KATEGORI, KATEGORI_ID + "=?", new String[]{
                     String.valueOf(kategori.getKategoriId())
             });
             cursor.close();
@@ -401,37 +404,41 @@ public class DBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateKategoriHandler(String id, String nama){
+    public boolean updateKategoriHandler(String id, String nama) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put(KATEGORI_ID, id);
         args.put(KATEGORI_NAMA, nama);
-        return db.update(TABLE_KATEGORI, args, KATEGORI_ID+"="+id, null)>0;
+        return db.update(TABLE_KATEGORI, args, KATEGORI_ID + "=" + id, null) > 0;
     }
 
     //TRANSAKSI
 
-    public Transaksi loadTransaksiHandler(){
-        String query = "SELECT * FROM "+TABLE_TRANSAKSI+" INNER JOIN "+TABLE_KASIR+" ON "+TRANSAKSI_ID_KASIR+" = "+KASIR_ID;
+    public List<Transaksi> loadTransaksiHandler() {
+        String query = "SELECT * FROM " + TABLE_TRANSAKSI + " INNER JOIN " + TABLE_KASIR + " ON " + TRANSAKSI_ID_KASIR + " = " + KASIR_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        Transaksi transaksi = new Transaksi();
-        if (cursor.moveToFirst()){
-            cursor.moveToFirst();
+        List<Transaksi> transaksis = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+            Transaksi transaksi = new Transaksi();
             transaksi.setTransaksiId(cursor.getString(0));
             transaksi.setTransaksiKasir(cursor.getString(5));
             transaksi.setTransaksiWaktu(cursor.getString(2));
             transaksi.setTransaksiTotalBelanja(cursor.getString(3));
+                transaksis.add(transaksi);
+                cursor.moveToNext();
+            }
             cursor.close();
-        }else{
-            transaksi = null;
+        } else {
+            transaksis = null;
         }
 
         db.close();
-        return transaksi;
+        return transaksis;
     }
 
-    public void addTransaksiHandler(Transaksi transaksi){
+    public void addTransaksiHandler(Transaksi transaksi) {
         ContentValues values = new ContentValues();
         values.put(TRANSAKSI_ID, transaksi.getTransaksiId());
         values.put(TRANSAKSI_ID_KASIR, transaksi.getTransaksiKasir());
@@ -443,19 +450,19 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Transaksi findTransaksiHandler(String search){
-        String query = "SELECT * FROM "+TABLE_TRANSAKSI+" INNER JOIN "+TABLE_KASIR+" ON "+TRANSAKSI_ID_KASIR+" = "+KASIR_ID+" WHERE "+TRANSAKSI_ID+" LIKE "+"'%"+search+"%' OR "+KASIR_NAMA+" LIKE "+"'%"+search+"%' OR "+TRANSAKSI_WAKTU+" LIKE "+"'%"+search+"%'";
+    public Transaksi findTransaksiHandler(String search) {
+        String query = "SELECT * FROM " + TABLE_TRANSAKSI + " INNER JOIN " + TABLE_KASIR + " ON " + TRANSAKSI_ID_KASIR + " = " + KASIR_ID + " WHERE " + TRANSAKSI_ID + " LIKE " + "'%" + search + "%' OR " + KASIR_NAMA + " LIKE " + "'%" + search + "%' OR " + TRANSAKSI_WAKTU + " LIKE " + "'%" + search + "%'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Transaksi transaksi = new Transaksi();
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             transaksi.setTransaksiId(cursor.getString(0));
             transaksi.setTransaksiKasir(cursor.getString(5));
             transaksi.setTransaksiWaktu(cursor.getString(2));
             transaksi.setTransaksiTotalBelanja(cursor.getString(3));
             cursor.close();
-        }else{
+        } else {
             transaksi = null;
         }
 
@@ -465,19 +472,19 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //DETAIL TRANSAKSI
 
-    public DetailTransaksi loadDetailTransaksiHandler(){
-        String query = "SELECT * FROM "+TABLE_DETAIL_TRANSAKSI+" INNER JOIN "+TABLE_BARANG+" ON "+DETAIL_TRANSAKSI_ID_BARANG+" = "+BARANG_ID;
+    public DetailTransaksi loadDetailTransaksiHandler() {
+        String query = "SELECT * FROM " + TABLE_DETAIL_TRANSAKSI + " INNER JOIN " + TABLE_BARANG + " ON " + DETAIL_TRANSAKSI_ID_BARANG + " = " + BARANG_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         DetailTransaksi detailTransaksi = new DetailTransaksi();
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             detailTransaksi.setDetailTransaksiId(cursor.getString(0));
             detailTransaksi.setDetailTransaksiBarang(cursor.getString(5));
             detailTransaksi.setDetailTransaksiJumlahBarang(cursor.getString(2));
             detailTransaksi.setDetailTransaksiTotalHarga(cursor.getString(3));
             cursor.close();
-        }else{
+        } else {
             detailTransaksi = null;
         }
 
@@ -485,7 +492,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return detailTransaksi;
     }
 
-    public void addDetailTransaksiHandler(DetailTransaksi detailTransaksi){
+    public void addDetailTransaksiHandler(DetailTransaksi detailTransaksi) {
         ContentValues values = new ContentValues();
         values.put(DETAIL_TRANSAKSI_ID, detailTransaksi.getDetailTransaksiId());
         values.put(DETAIL_TRANSAKSI_JUMLAH_BARANG, detailTransaksi.getDetailTransaksiJumlahBarang());
@@ -496,19 +503,19 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public DetailTransaksi findDetailTransaksiHandler(String search){
-        String query = "SELECT * FROM "+TABLE_DETAIL_TRANSAKSI+" INNER JOIN "+TABLE_BARANG+" ON "+DETAIL_TRANSAKSI_ID_BARANG+" = "+BARANG_ID+" WHERE "+DETAIL_TRANSAKSI_ID+" LIKE "+"'%"+search+"%' OR "+BARANG_NAMA+" LIKE "+"'%"+search+"%'";
+    public DetailTransaksi findDetailTransaksiHandler(String search) {
+        String query = "SELECT * FROM " + TABLE_DETAIL_TRANSAKSI + " INNER JOIN " + TABLE_BARANG + " ON " + DETAIL_TRANSAKSI_ID_BARANG + " = " + BARANG_ID + " WHERE " + DETAIL_TRANSAKSI_ID + " LIKE " + "'%" + search + "%' OR " + BARANG_NAMA + " LIKE " + "'%" + search + "%'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         DetailTransaksi detailTransaksi = new DetailTransaksi();
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             detailTransaksi.setDetailTransaksiId(cursor.getString(0));
             detailTransaksi.setDetailTransaksiBarang(cursor.getString(5));
             detailTransaksi.setDetailTransaksiJumlahBarang(cursor.getString(2));
             detailTransaksi.setDetailTransaksiTotalHarga(cursor.getString(3));
             cursor.close();
-        }else{
+        } else {
             detailTransaksi = null;
         }
 

@@ -9,6 +9,11 @@ public class Kasir {
     public Kasir() {
     }
 
+    public Kasir(String kasirId, String kasirNama) {
+        this.kasirId = kasirId;
+        this.kasirNama = kasirNama;
+    }
+
     public Kasir(String kasirId, String kasirNama, String kasirUsername, String kasirPassword) {
         this.kasirId = kasirId;
         this.kasirNama = kasirNama;

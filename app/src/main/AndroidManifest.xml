@@ -22,15 +22,16 @@
         <activity android:name=".activity.TransaksiActivity" />
         <activity android:name=".activity.KasirActivity"
             android:parentActivityName=".activity.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity android:name=".activity.BarangActivity"
             android:parentActivityName=".activity.MainActivity">
         </activity>
         <activity android:name=".activity.MainActivity">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
     </application>
 

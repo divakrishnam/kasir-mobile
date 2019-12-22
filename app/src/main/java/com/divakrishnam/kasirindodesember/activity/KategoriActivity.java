@@ -49,8 +49,6 @@ public class KategoriActivity extends AppCompatActivity {
         btnCari = findViewById(R.id.btn_cari);
         btnRefresh = findViewById(R.id.btn_refresh);
 
-        showLoading(true);
-
         dbHandler = new DBHandler(this, null, null, 1);
 
         loadData();
@@ -71,6 +69,7 @@ public class KategoriActivity extends AppCompatActivity {
     }
 
     private void loadData() {
+        showLoading(true);
         List<Kategori> kategoris = dbHandler.loadKategoriHandler();
         if (kategoris != null){
             showMessage(false, "");
