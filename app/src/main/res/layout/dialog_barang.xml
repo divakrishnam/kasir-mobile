@@ -1,92 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingVertical="10dp"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fl_scan"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="12dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ID Barang"
+        android:layout_marginHorizontal="12dp"
         android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="12dp"/>
+        android:text="ID Barang" />
 
     <EditText
         android:id="@+id/et_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
         android:layout_marginHorizontal="12dp"
-        android:background="@drawable/custom_edittext"/>
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/custom_edittext"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp" />
+
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nama Barang"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:text="Nama Barang" />
 
     <EditText
         android:id="@+id/et_nama"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        android:paddingHorizontal="10dp"
         android:layout_marginHorizontal="12dp"
-        android:paddingVertical="10dp"
-        android:background="@drawable/custom_edittext"/>
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/custom_edittext"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Kategori Barang"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:text="Kategori Barang" />
 
     <Spinner
         android:id="@+id/sp_kategori"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
         android:layout_marginVertical="8dp"
         android:paddingHorizontal="10dp"
-        android:layout_marginHorizontal="12dp"
-        android:paddingVertical="20dp"/>
+        android:paddingVertical="20dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Stok Barang"
-        android:inputType="number"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:inputType="number"
+        android:text="Stok Barang" />
 
     <EditText
         android:id="@+id/et_stok"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
         android:layout_marginHorizontal="12dp"
-        android:background="@drawable/custom_edittext"/>
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/custom_edittext"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Harga Barang"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:text="Harga Barang" />
 
     <EditText
         android:id="@+id/et_harga"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
         android:layout_marginHorizontal="12dp"
-        android:background="@drawable/custom_edittext"/>
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/custom_edittext"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp" />
+
+    <Button
+        android:id="@+id/btn_simpan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:text="Simpan"/>
+
+    <Button
+        android:id="@+id/btn_batal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:text="Batal"/>
 
 </LinearLayout>

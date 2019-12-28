@@ -55,8 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         DBHandler dbHandler = new DBHandler(this, null, null, 1);
         Kasir kasir = dbHandler.loginHandler(username, password);
         if (kasir!=null){
-            SharedPrefManager.getInstance(getApplicationContext()).kasirLogin(kasir);
             finish();
+            SharedPrefManager.getInstance(getApplicationContext()).kasirLogin(kasir);
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }else{
             Toast.makeText(getApplicationContext(), "Username dan Password salah", Toast.LENGTH_LONG).show();

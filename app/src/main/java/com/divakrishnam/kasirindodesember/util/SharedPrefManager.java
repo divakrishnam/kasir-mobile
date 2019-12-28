@@ -3,7 +3,12 @@ package com.divakrishnam.kasirindodesember.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.divakrishnam.kasirindodesember.model.DetailTransaksi;
 import com.divakrishnam.kasirindodesember.model.Kasir;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 public class SharedPrefManager {
     private SharedPreferences pref;
@@ -17,6 +22,8 @@ public class SharedPrefManager {
     private static final String KEY_PASSWORD = "keypassword";
     private static final String KEY_NAMA = "keynama";
     private static final String KEY_ID = "keyid";
+
+    private static final String KEY_DETAILTRANSAKSI = "detailtransaksi";
 
     private SharedPrefManager(Context context){
         mContext = context;
@@ -36,6 +43,24 @@ public class SharedPrefManager {
         editor.putString(KEY_NAMA, kasir.getKasirNama());
         editor.putString(KEY_USERNAME, kasir.getKasirUsername());
         editor.putString(KEY_PASSWORD, kasir.getKasirPassword());
+        editor.apply();
+    }
+
+    public void setDetailTransaksi(List<DetailTransaksi> detailTransaksis){
+        Gson gson = new Gson();
+        String json = gson.toJson(detailTransaksis);
+        editor.putString(KEY_DETAILTRANSAKSI, json);
+        editor.apply();
+    }
+
+    public List<DetailTransaksi> getDetailTransaksi(){
+        Gson gson = new Gson();
+        String json = pref.getString(KEY_DETAILTRANSAKSI, null);
+        return gson.fromJson(json, new TypeToken<List<DetailTransaksi>>(){}.getType());
+    }
+
+    public void resetDetailTransaksi(){
+        editor.putString(KEY_DETAILTRANSAKSI, null);
         editor.apply();
     }
 

@@ -101,6 +101,7 @@ public class KategoriActivity extends AppCompatActivity {
                 if (!id.isEmpty() && !nama.isEmpty()){
                     Kategori kategori = new Kategori(id, nama);
                     dbHandler.addKategoriHandler(kategori);
+                    loadData();
                 }
             }
         });

@@ -24,7 +24,7 @@ public class TransaksiAdapter  extends RecyclerView.Adapter<TransaksiAdapter.Tra
     @NonNull
     @Override
     public TransaksiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_kategori, parent, false);
+        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_transaksi, parent, false);
         TransaksiViewHolder mViewHolder = new TransaksiViewHolder(mView);
         return mViewHolder;
     }
@@ -34,7 +34,6 @@ public class TransaksiAdapter  extends RecyclerView.Adapter<TransaksiAdapter.Tra
         holder.tvId.setText(" : "+mList.get(position).getTransaksiId());
         holder.tvKasir.setText(" : "+mList.get(position).getTransaksiKasir());
         holder.tvWaktu.setText(" : "+mList.get(position).getTransaksiWaktu());
-        holder.tvTotal.setText(" : "+mList.get(position).getTransaksiTotalBelanja());
     }
 
     @Override
@@ -44,7 +43,7 @@ public class TransaksiAdapter  extends RecyclerView.Adapter<TransaksiAdapter.Tra
 
     public class TransaksiViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvId, tvKasir, tvWaktu, tvTotal;
+        TextView tvId, tvKasir, tvWaktu;
 
         public TransaksiViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -52,7 +51,6 @@ public class TransaksiAdapter  extends RecyclerView.Adapter<TransaksiAdapter.Tra
             tvId = itemView.findViewById(R.id.tv_id);
             tvKasir = itemView.findViewById(R.id.tv_kasir);
             tvWaktu = itemView.findViewById(R.id.tv_waktu);
-            tvTotal = itemView.findViewById(R.id.tv_total);
         }
     }
 }

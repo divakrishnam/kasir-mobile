@@ -2,12 +2,16 @@ package com.divakrishnam.kasirindodesember.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +19,26 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.divakrishnam.kasirindodesember.R;
 import com.divakrishnam.kasirindodesember.adapter.BarangAdapter;
+import com.divakrishnam.kasirindodesember.dialog.BarangDialog;
 import com.divakrishnam.kasirindodesember.handler.DBHandler;
 import com.divakrishnam.kasirindodesember.model.Barang;
 import com.divakrishnam.kasirindodesember.model.Kategori;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.zxing.Result;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class BarangActivity extends AppCompatActivity {
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+public class BarangActivity extends AppCompatActivity implements BarangDialog.BarangDialogListener {
 
     private ProgressBar pbBarang;
     private TextView tvPesan;
@@ -40,10 +49,10 @@ public class BarangActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private DBHandler dbHandler;
-    private Spinner spKategori;
-    private String[] keys;
 
     private Button btnCari, btnRefresh;
+
+    String message = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +78,7 @@ public class BarangActivity extends AppCompatActivity {
         fabTambahBarang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCustomDialog();
+                showDialogBarang();
             }
         });
 
@@ -81,7 +90,7 @@ public class BarangActivity extends AppCompatActivity {
         });
     }
 
-    private void loadData() {
+    public void loadData() {
         List<Barang> barangs = dbHandler.loadBarangHandler();
         if (barangs != null){
             showMessage(false, "");
@@ -89,7 +98,6 @@ public class BarangActivity extends AppCompatActivity {
             rvBarang.setLayoutManager(mLayoutManager);
             mAdapter = new BarangAdapter(barangs);
             rvBarang.setAdapter(mAdapter);
-            rvBarang.setNestedScrollingEnabled(false);
         }else{
             showMessage(true, "Data tidak ada");
         }
@@ -97,61 +105,10 @@ public class BarangActivity extends AppCompatActivity {
         showLoading(false);
     }
 
-    private void showCustomDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Tambah Barang");
-        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_tambah_barang, null);
-        builder.setView(dialogView);
-        final EditText etId = dialogView.findViewById(R.id.et_id);
-        final EditText etNama = dialogView.findViewById(R.id.et_nama);
-        final EditText etStok = dialogView.findViewById(R.id.et_stok);
-        final EditText etHarga = dialogView.findViewById(R.id.et_harga);
-        spKategori = dialogView.findViewById(R.id.sp_kategori);
-        if(dbHandler.loadKategoriHandler() != null){
-            spinnerKategori();
-        }
-        builder.setPositiveButton("Simpan", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String id = etId.getText().toString();
-                String nama = etNama.getText().toString();
-                String stok = etStok.getText().toString();
-                String harga = etHarga.getText().toString();
-                String kategori = keys[(int)spKategori.getSelectedItemId()];
-
-                if (!id.isEmpty() && !nama.isEmpty() && !stok.isEmpty() && !harga.isEmpty()){
-                    Barang barang = new Barang(id, nama, kategori, stok, harga);
-                    dbHandler.addBarangHandler(barang);
-                }
-            }
-        });
-        builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    public void spinnerKategori() {
-        int size = dbHandler.loadKategoriHandler().size();
-        String[] values = new String[size];
-        keys = new String[size];
-        HashMap<String, String> map;
-        int i = 0;
-        map = new HashMap<>();
-        for (Kategori kategori : dbHandler.loadKategoriHandler() ) {
-            values[i] = kategori.getKategoriNama();
-            keys[i] = kategori.getKategoriId();
-            map.put(keys[i], values[i]);
-            i++;
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, values);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spKategori.setAdapter(adapter);
+    private void showDialogBarang(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        BarangDialog barangDialog = BarangDialog.newInstance("Tambah Barang");
+        barangDialog.show(fragmentManager, "dialog_barang");
     }
 
     private void showMessage(Boolean state, String message){
@@ -169,5 +126,16 @@ public class BarangActivity extends AppCompatActivity {
         } else {
             pbBarang.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    @Override
+    public void onFinishBarangDialog() {
+        loadData();
     }
 }

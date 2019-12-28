@@ -3,8 +3,10 @@ package com.divakrishnam.kasirindodesember.handler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -106,8 +108,6 @@ public class DBHandler extends SQLiteOpenHelper {
                 + TRANSAKSI_ID_KASIR
                 + " TEXT,"
                 + TRANSAKSI_WAKTU
-                + " TEXT,"
-                + TRANSAKSI_TOTAL_BELANJA
                 + " TEXT)";
         sqLiteDatabase.execSQL(CREATE_TABLE_TRANSAKSI);
 
@@ -121,7 +121,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + DETAIL_TRANSAKSI_JUMLAH_BARANG
                 + " INTEGER,"
                 + DETAIL_TRANSAKSI_TOTAL_HARGA
-                + " INTEGER)";
+                + " TEXT)";
         sqLiteDatabase.execSQL(CREATE_TABLE_DETAIL_TRANSAKSI);
 
         String CREATE_TRIGGER_BARANG = "CREATE TRIGGER "
@@ -129,8 +129,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 + " AFTER INSERT ON "
                 + TABLE_DETAIL_TRANSAKSI
                 + " BEGIN"
-                + " UPDATE " + TABLE_BARANG + " SET " + BARANG_STOK + "=OLD." + BARANG_STOK + "-NEW." + DETAIL_TRANSAKSI_JUMLAH_BARANG
-                + " WHERE OLD." + BARANG_ID + "=NEW." + DETAIL_TRANSAKSI_ID_BARANG + ";"
+                + " UPDATE " + TABLE_BARANG + " SET " + BARANG_STOK + " = " + BARANG_STOK + "-new." + DETAIL_TRANSAKSI_JUMLAH_BARANG
+                + " WHERE " + BARANG_ID + "= new." + DETAIL_TRANSAKSI_ID_BARANG + ";"
                 + " END;";
         sqLiteDatabase.execSQL(CREATE_TRIGGER_BARANG);
     }
@@ -181,7 +181,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public Barang findBarangHandler(String search) {
-        String query = "SELECT * FROM " + TABLE_BARANG + " WHERE " + BARANG_NAMA + " LIKE " + "'%" + search + "%' OR " + BARANG_ID + " LIKE " + "'%" + search + "%'";
+        String query = "SELECT * FROM " + TABLE_BARANG + " INNER JOIN " + TABLE_KATEGORI + " ON " + BARANG_ID_KATEGORI + " = " + KATEGORI_ID + " WHERE " + BARANG_NAMA + " LIKE " + "'%" + search + "%' OR " + BARANG_ID + " LIKE " + "'%" + search + "%'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Barang barang = new Barang();
@@ -414,6 +414,30 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //TRANSAKSI
 
+    public int setIdTransaksiHandler() {
+
+        int idTransaksi;
+        SQLiteDatabase dbr = this.getReadableDatabase();
+        long count = DatabaseUtils.queryNumEntries(dbr, TABLE_TRANSAKSI);
+
+        if (count > 0) {
+            String query = "SELECT " + TRANSAKSI_ID + " FROM " + TABLE_TRANSAKSI + " ORDER BY " + TRANSAKSI_ID + " DESC";
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                cursor.moveToFirst();
+                idTransaksi = Integer.parseInt(cursor.getString(0));
+                cursor.close();
+                return idTransaksi+1;
+            }
+            db.close();
+        } else {
+            return 0;
+        }
+        dbr.close();
+        return 0;
+    }
+
     public List<Transaksi> loadTransaksiHandler() {
         String query = "SELECT * FROM " + TABLE_TRANSAKSI + " INNER JOIN " + TABLE_KASIR + " ON " + TRANSAKSI_ID_KASIR + " = " + KASIR_ID;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -422,10 +446,9 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 Transaksi transaksi = new Transaksi();
-                transaksi.setTransaksiId(cursor.getString(0));
-                transaksi.setTransaksiKasir(cursor.getString(5));
+                transaksi.setTransaksiId(cursor.getInt(0));
+                transaksi.setTransaksiKasir(cursor.getString(4));
                 transaksi.setTransaksiWaktu(cursor.getString(2));
-                transaksi.setTransaksiTotalBelanja(cursor.getString(3));
                 transaksis.add(transaksi);
                 cursor.moveToNext();
             }
@@ -443,7 +466,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(TRANSAKSI_ID, transaksi.getTransaksiId());
         values.put(TRANSAKSI_ID_KASIR, transaksi.getTransaksiKasir());
         values.put(TRANSAKSI_WAKTU, transaksi.getTransaksiWaktu());
-        values.put(TRANSAKSI_TOTAL_BELANJA, transaksi.getTransaksiTotalBelanja());
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_TRANSAKSI, null, values);
@@ -457,10 +479,9 @@ public class DBHandler extends SQLiteOpenHelper {
         Transaksi transaksi = new Transaksi();
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            transaksi.setTransaksiId(cursor.getString(0));
-            transaksi.setTransaksiKasir(cursor.getString(5));
+            transaksi.setTransaksiId(cursor.getInt(0));
+            transaksi.setTransaksiKasir(cursor.getString(3));
             transaksi.setTransaksiWaktu(cursor.getString(2));
-            transaksi.setTransaksiTotalBelanja(cursor.getString(3));
             cursor.close();
         } else {
             transaksi = null;
@@ -472,34 +493,40 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //DETAIL TRANSAKSI
 
-    public DetailTransaksi loadDetailTransaksiHandler() {
+    public List<DetailTransaksi> loadDetailTransaksiHandler() {
         String query = "SELECT * FROM " + TABLE_DETAIL_TRANSAKSI + " INNER JOIN " + TABLE_BARANG + " ON " + DETAIL_TRANSAKSI_ID_BARANG + " = " + BARANG_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        DetailTransaksi detailTransaksi = new DetailTransaksi();
+        List<DetailTransaksi> detailTransaksis = new ArrayList<>();
         if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
-            detailTransaksi.setDetailTransaksiId(cursor.getString(0));
-            detailTransaksi.setDetailTransaksiBarang(cursor.getString(5));
-            detailTransaksi.setDetailTransaksiJumlahBarang(cursor.getString(2));
-            detailTransaksi.setDetailTransaksiTotalHarga(cursor.getString(3));
+            while (!cursor.isAfterLast()) {
+                DetailTransaksi detailTransaksi = new DetailTransaksi();
+                detailTransaksi.setDetailTransaksiId(cursor.getInt(0));
+                detailTransaksi.setDetailTransaksiBarang(cursor.getString(5));
+                detailTransaksi.setDetailTransaksiJumlahBarang(cursor.getInt(2));
+                detailTransaksi.setDetailTransaksiTotalHarga(cursor.getString(3));
+                detailTransaksis.add(detailTransaksi);
+                cursor.moveToNext();
+            }
             cursor.close();
         } else {
-            detailTransaksi = null;
+            detailTransaksis = null;
         }
 
         db.close();
-        return detailTransaksi;
+        return detailTransaksis;
     }
 
     public void addDetailTransaksiHandler(DetailTransaksi detailTransaksi) {
+        Log.d("lala", detailTransaksi.getDetailTransaksiBarang());
         ContentValues values = new ContentValues();
         values.put(DETAIL_TRANSAKSI_ID, detailTransaksi.getDetailTransaksiId());
+        values.put(DETAIL_TRANSAKSI_ID_BARANG, detailTransaksi.getDetailTransaksiIdBarang());
         values.put(DETAIL_TRANSAKSI_JUMLAH_BARANG, detailTransaksi.getDetailTransaksiJumlahBarang());
         values.put(DETAIL_TRANSAKSI_TOTAL_HARGA, detailTransaksi.getDetailTransaksiTotalHarga());
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABLE_TRANSAKSI, null, values);
+        db.insert(TABLE_DETAIL_TRANSAKSI, null, values);
         db.close();
     }
 
@@ -510,9 +537,9 @@ public class DBHandler extends SQLiteOpenHelper {
         DetailTransaksi detailTransaksi = new DetailTransaksi();
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            detailTransaksi.setDetailTransaksiId(cursor.getString(0));
+            detailTransaksi.setDetailTransaksiId(cursor.getInt(0));
             detailTransaksi.setDetailTransaksiBarang(cursor.getString(5));
-            detailTransaksi.setDetailTransaksiJumlahBarang(cursor.getString(2));
+            detailTransaksi.setDetailTransaksiJumlahBarang(cursor.getInt(2));
             detailTransaksi.setDetailTransaksiTotalHarga(cursor.getString(3));
             cursor.close();
         } else {

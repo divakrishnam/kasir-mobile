@@ -1,22 +1,20 @@
 package com.divakrishnam.kasirindodesember.model;
 
 public class Transaksi {
-    private String transaksiId;
+    private int transaksiId;
     private String transaksiKasir;
     private String transaksiWaktu;
-    private String transaksiTotalBelanja;
 
     public Transaksi() {
     }
 
-    public Transaksi(String transaksiId, String transaksiKasir, String transaksiWaktu, String transaksiTotalBelanja) {
+    public Transaksi(int transaksiId, String transaksiKasir, String transaksiWaktu) {
         this.transaksiId = transaksiId;
         this.transaksiKasir = transaksiKasir;
         this.transaksiWaktu = transaksiWaktu;
-        this.transaksiTotalBelanja = transaksiTotalBelanja;
     }
 
-    public String getTransaksiId() {
+    public int getTransaksiId() {
         return transaksiId;
     }
 
@@ -28,11 +26,7 @@ public class Transaksi {
         return transaksiWaktu;
     }
 
-    public String getTransaksiTotalBelanja() {
-        return transaksiTotalBelanja;
-    }
-
-    public void setTransaksiId(String transaksiId) {
+    public void setTransaksiId(int transaksiId) {
         this.transaksiId = transaksiId;
     }
 
@@ -42,9 +36,5 @@ public class Transaksi {
 
     public void setTransaksiWaktu(String transaksiWaktu) {
         this.transaksiWaktu = transaksiWaktu;
-    }
-
-    public void setTransaksiTotalBelanja(String transaksiTotalBelanja) {
-        this.transaksiTotalBelanja = transaksiTotalBelanja;
     }
 }
